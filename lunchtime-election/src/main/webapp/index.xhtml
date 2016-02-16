@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>Meu restaurante preferido</title>
+</h:head>
+
+<h:body>
+	<a4j:outputPanel id="voted" rendered="#{empty electionMBean.election}">
+		<h:form>
+			<rich:panel>
+				<center>
+					<fieldset>
+						<legend>Usuário</legend>
+						<h:outputLabel value="E-mail: " for="email" />
+						<h:inputText id="email" value="#{electionMBean.email}" size="40"
+							maxlength="60" />
+						<h:outputText />
+						<br />
+						<h:commandButton value="Validar"
+							action="#{electionMBean.validation}" />
+					</fieldset>
+
+				</center>
+			</rich:panel>
+		</h:form>
+	</a4j:outputPanel>
+	<h:form>
+		<rich:panel>
+			<center>
+				<br />
+				<a4j:outputPanel id="parent_restaurants">
+					<a4j:outputPanel
+						rendered="#{not empty electionMBean.email and empty electionMBean.election}"
+						id="restaurants">
+						<fieldset>
+							<legend>Restaurantes</legend>
+							<h:outputText value="Restaurantes" />
+							<h:selectOneMenu value="#{electionMBean.restaurantId}"
+								valueChangeListener="#{electionMBean.valueChanged}">
+								<f:selectItems value="#{electionMBean.restaurantItems}" />
+								<a4j:ajax event="valueChange" render="parent_buttom"
+									execute="@this" />
+							</h:selectOneMenu>
+							<br /> <br /> <br /> <br />
+
+							<rich:dataTable id="table-restaurant-list-voted" var="election"
+								value="#{electionMBean.lastElectionWeek}" style="width:25%"
+								rendered="#{empty electionMBean.voting}">
+								<f:facet name="header">
+									<rich:columnGroup>
+										<rich:column style="text-align:center; width: 10%;">
+											<h:outputText value="Restaurantes" />
+										</rich:column>
+										<rich:column style="text-align:center; width:3%;">
+											<h:outputText value="Data Eleição" />
+										</rich:column>
+									</rich:columnGroup>
+								</f:facet>
+								<rich:column>
+									<h:outputText
+										value="#{election.restaurantElected.restaurantName}" />
+								</rich:column>
+								<rich:column>
+									<h:outputText value="#{election.electionDate}" />
+								</rich:column>
+							</rich:dataTable>
+							<br /> <br />
+						</fieldset>
+					</a4j:outputPanel>
+					<h:commandButton value="Votar" id="voted-bt"
+						rendered="#{not empty electionMBean.email}"
+						action="#{electionMBean.voted}" />
+				</a4j:outputPanel>
+			</center>
+		</rich:panel>
+	</h:form>
+
+	<a4j:outputPanel id="election"
+		rendered="#{not empty electionMBean.election}">
+		<h:form>
+			<rich:panel>
+				<center>
+					<h:outputText
+						value="Eleição realizada, o restaurante selecionado foi #{electionMBean.election.restaurantElected.restaurantName}" />
+
+				</center>
+			</rich:panel>
+		</h:form>
+	</a4j:outputPanel>
+</h:body>
+</html>
